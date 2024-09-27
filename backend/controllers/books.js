@@ -27,10 +27,12 @@ exports.getOneBook = (req, res, next) => {
     .catch((error) => res.status(404).json({ error }));
 };
 
-exports.createBook = (req, res, next) => {
+exports.createBook = async (req, res, next) => {
   const bookObject = JSON.parse(req.body.book);
+
   delete bookObject._id;
   delete bookObject._userId;
+
   const book = new Book({
     ...bookObject,
     userId: req.auth.userId,
@@ -93,7 +95,7 @@ exports.editBook = (req, res, next) => {
     : { ...req.body };
   delete bookObject._userId;
 
-  function editBook(paramsId, bookObject) {
+  function editBookFunction(paramsId, bookObject) {
     Book.updateOne({ _id: paramsId }, { ...bookObject, _id: paramsId })
       .then(() => res.status(200).json({ message: "Objet modifié !" }))
       .catch((error) => res.status(401).json({ error }));
@@ -112,10 +114,10 @@ exports.editBook = (req, res, next) => {
         ) {
           const filename = oldImage.split("/images/")[1];
           fs.unlink(`images/${filename}`, () => {
-            editBook(req.params.id, bookObject);
+            editBookFunction(req.params.id, bookObject);
           });
         } else {
-          editBook(req.params.id, bookObject);
+          editBookFunction(req.params.id, bookObject);
         }
       }
     })

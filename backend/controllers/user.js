@@ -2,11 +2,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-exports.test = (req, res, next) => {
-  console.log("Je suis ici wesh !");
-  res.status(200).json({ message: "Je suis là où je veux lol !" });
-};
-
 exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
